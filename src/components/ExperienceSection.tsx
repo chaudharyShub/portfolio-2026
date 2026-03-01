@@ -3,26 +3,49 @@ import { Briefcase } from "lucide-react";
 
 const experiences = [
   {
-    role: "Senior Software Engineer",
+    role: "Software Engineer",
     company: "Tech Company",
-    period: "2023 — Present",
-    desc: "Leading frontend architecture and building scalable web applications with React.js and Next.js. Mentoring junior developers and driving best practices.",
-    tags: ["React.js", "Next.js", "TypeScript", "Node.js"],
+    period: "2022 — Present",
+    desc: "I work as a Frontend Developer specializing in React.js, Next.js, JavaScript, HTML, and CSS, building responsive, user-friendly interfaces with clean and optimized code. I collaborate closely with teams to translate requirements into functional UI and ensure smooth user experiences. Alongside frontend work, I also have hands-on experience with backend technologies like Node.js, Express, and MongoDB, enabling me to handle APIs, basic server logic, and end-to-end functionality when needed.",
+    tags: [
+      "React.js",
+      "Next.js",
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "Tailwind",
+      "TypeScript",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Electron.js",
+      "Material UI",
+      "Redux",
+      "Git",
+      "REST APIs",
+    ],
   },
   {
-    role: "Full Stack Developer",
-    company: "Digital Agency",
-    period: "2022 — 2023",
-    desc: "Developed full-stack applications for various clients using the MERN stack. Implemented RESTful APIs and optimized database queries for performance.",
-    tags: ["MongoDB", "Express.js", "React.js", "Tailwind CSS"],
+    role: "Mechanical Engineer",
+    company: "Manufactuing Sector",
+    period: "2020 — 2022",
+    desc: "I led a team of 10–12 technicians in the maintenance department of a bathmat manufacturing plant, overseeing both preventive and breakdown maintenance to ensure uninterrupted production. I developed maintenance schedules, identified root causes of equipment failures, and streamlined repair processes to reduce downtime. I also coordinated closely with production teams, maintained documentation, and ensured adherence to safety and quality standards.",
+    tags: [
+      "Supervision",
+      "Preventive Maintenance",
+      "Breakdown Maintenance",
+      "Project Management",
+      "Leadership",
+      "Ownership",
+    ],
   },
-  {
-    role: "Junior Developer",
-    company: "Startup",
-    period: "2021 — 2022",
-    desc: "Built responsive user interfaces and integrated third-party APIs. Collaborated in agile teams to deliver features on tight deadlines.",
-    tags: ["JavaScript", "React.js", "MUI", "Git"],
-  },
+  // {
+  //   role: "Junior Developer",
+  //   company: "Startup",
+  //   period: "2021 — 2022",
+  //   desc: "Built responsive user interfaces and integrated third-party APIs. Collaborated in agile teams to deliver features on tight deadlines.",
+  //   tags: ["JavaScript", "React.js", "MUI", "Git"],
+  // },
 ];
 
 const ExperienceSection = () => {
@@ -65,11 +88,19 @@ const ExperienceSection = () => {
 
               <div className="card-glass p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                  <h3 className="font-display font-semibold text-foreground">{exp.role}</h3>
-                  <span className="text-xs font-mono text-muted-foreground">{exp.period}</span>
+                  <h3 className="font-display font-semibold text-foreground">
+                    {exp.role}
+                  </h3>
+                  <span className="text-xs font-mono text-muted-foreground">
+                    {exp.period}
+                  </span>
                 </div>
-                <p className="text-sm text-primary font-medium mb-2">{exp.company}</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{exp.desc}</p>
+                <p className="text-sm text-primary font-medium mb-2">
+                  {exp.company}
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                  {exp.desc}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {exp.tags.map((tag, ti) => (
                     <span

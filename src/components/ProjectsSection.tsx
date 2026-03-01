@@ -88,7 +88,7 @@ const ProjectsSection = () => {
                   </span>
                 ))}
               </div>
-              <div className="flex gap-3">
+              {/* <div className="flex gap-3">
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-primary transition-colors"
@@ -101,7 +101,7 @@ const ProjectsSection = () => {
                 >
                   <ExternalLink size={18} />
                 </a>
-              </div>
+              </div> */}
             </motion.div>
           ))}
         </div>

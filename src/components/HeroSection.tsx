@@ -97,7 +97,7 @@ const HeroSection = () => {
               transition={{ delay: 0.4 }}
               className="section-badge mb-8 py-2 px-5 bg-[#0a192f] border-[#1e293b] flex items-center gap-2"
             >
-              <span className="mr-2 inline-block w-[10px] h-[9px] rounded-full bg-highlight-green shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              <span className="mr-2 inline-block w-[10px] h-[10px] rounded-full bg-highlight-green shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
               <span className="text-[#4589ff] text-xs font-semibold">Available for opportunities</span>
             </motion.div>
 
