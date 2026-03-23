@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Code2, Server, Database, Layers } from "lucide-react";
+import { Code2, Server, MonitorCheck } from "lucide-react";
 
 const cards = [
   {
@@ -19,9 +19,9 @@ const cards = [
   //   desc: "Proficient in MongoDB schema design, data modeling, and query optimization for scalable applications.",
   // },
   {
-    icon: Layers,
-    title: "Clean Architecture",
-    desc: "Following SOLID principles, design patterns, and writing maintainable, well-tested code.",
+    icon: MonitorCheck,
+    title: "Desktop Applications",
+    desc: "Experienced in building cross-platform desktop apps using Electron.js, combining web technologies with native capabilities.",
   },
 ];
 
@@ -69,9 +69,13 @@ const AboutSection = () => {
             <span className="text-gradient-primary">great software</span>
           </h2>
           <p className="text-muted-foreground max-w-6xl mx-auto text-lg">
-            With 5+ years of total experience (2 years as a Mechanical Engineer & 3 years as a Software Engineer), I've navigated a unique career path that combines engineering precision with creative web development.
-            I'm a full stack software engineer with 3+ years of hands-on experience building scalable web applications.
-            I specialize in the MERN stack and love creating products that make a real difference for users.
+            With 5+ years of total experience (2 years as a Mechanical Engineer
+            & 3 years as a Software Engineer), I've navigated a unique career
+            path that combines engineering precision with creative web
+            development. I'm a full stack software engineer with 3+ years of
+            hands-on experience building scalable web applications. I specialize
+            in the MERN stack (Frontend Heavy) and love creating products that
+            make a real difference for users.
           </p>
         </motion.div>
 
@@ -92,8 +96,12 @@ const AboutSection = () => {
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <card.icon size={20} className="text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-foreground mb-2">{card.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{card.desc}</p>
+              <h3 className="font-display font-semibold text-foreground mb-2">
+                {card.title}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {card.desc}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -127,63 +135,67 @@ const AboutSection = () => {
             <div className="w-3 h-3 rounded-full bg-highlight-red/70" />
             <div className="w-3 h-3 rounded-full bg-highlight-yellow/70" />
             <div className="w-3 h-3 rounded-full bg-highlight-green/70" />
-            <span className="ml-2 text-xs text-muted-foreground font-mono">about.ts</span>
+            <span className="ml-2 text-xs text-muted-foreground font-mono">
+              about.ts
+            </span>
           </div>
           <pre className="p-5 font-mono text-sm text-muted-foreground overflow-x-auto">
             <code>
-              {codeBlock.split("\n").map((line, i) => (
-                <div key={i}>
-                  {line.includes("const") && (
-                    <span>
-                      <span className="text-accent">const</span>
-                      {line.replace("const", "")}
-                    </span>
-                  )}
-                  {line.includes(":") && !line.includes("const") && !line.includes("[") && !line.includes("};") && (
-                    <span>
+              {codeBlock.split("\n").map((line, i) => {
+                const trimmed = line.trim();
+
+                if (trimmed.startsWith("const")) {
+                  const [, varName] = trimmed.split(" ");
+                  return (
+                    <div key={i}>
+                      <span className="text-purple-400">const</span>{" "}
+                      <span className="text-blue-400">
+                        {varName.replace("=", "")}
+                      </span>{" "}
+                      <span className="text-white">= {"{"}</span>
+                    </div>
+                  );
+                }
+
+                if (trimmed === "};") {
+                  return (
+                    <div key={i}>
+                      <span className="text-white">{"};"}</span>
+                    </div>
+                  );
+                }
+
+                if (trimmed.includes(":")) {
+                  const [keyPart, valuePart] = trimmed.split(/:(.+)/);
+                  const key = keyPart.trim();
+                  const value = valuePart.trim();
+
+                  const isArray = value.startsWith("[");
+                  const isString = value.startsWith('"');
+
+                  return (
+                    <div key={i}>
                       {"  "}
-                      <span className="text-highlight-blue">{line.trim().split(":")[0]}</span>
-                      {": "}
-                      <span className="text-highlight-green">
-                        {line.trim().split(":").slice(1).join(":").trim()}
-                      </span>
-                    </span>
-                  )}
-                  {line.includes("front_end") && (
-                    <span>
-                      {"  "}
-                      <span className="text-highlight-blue">front_end</span>
-                      {": "}
-                      <span className="text-highlight-yellow">{line.trim().split(":").slice(1).join(":").trim()}</span>
-                    </span>
-                  )}
-                  {line.includes("back_end") && (
-                    <span>
-                      {"  "}
-                      <span className="text-highlight-blue">back_end</span>
-                      {": "}
-                      <span className="text-highlight-yellow">{line.trim().split(":").slice(1).join(":").trim()}</span>
-                    </span>
-                  )}
-                  {line.includes("cloud") && (
-                    <span>
-                      {"  "}
-                      <span className="text-highlight-blue">cloud</span>
-                      {": "}
-                      <span className="text-highlight-yellow">{line.trim().split(":").slice(1).join(":").trim()}</span>
-                    </span>
-                  )}
-                  {/* {line.includes("Infinity") && !line.includes("[") && (
-                    <span>
-                      {"  "}
-                      <span className="text-highlight-blue">coffee</span>
-                      {": "}
-                      <span className="text-highlight-pink">Infinity</span>,
-                    </span>
-                  )} */}
-                  {line.includes("};") && <span>{line}</span>}
-                </div>
-              ))}
+                      <span className="text-blue-400">{key}</span>
+                      <span className="text-white">: </span>
+
+                      {isArray && (
+                        <span className="text-yellow-300">{value}</span>
+                      )}
+
+                      {!isArray && isString && (
+                        <span className="text-green-400">{value}</span>
+                      )}
+
+                      {!isArray && !isString && (
+                        <span className="text-pink-400">{value}</span>
+                      )}
+                    </div>
+                  );
+                }
+
+                return <div key={i}>{line}</div>;
+              })}
             </code>
           </pre>
         </motion.div>

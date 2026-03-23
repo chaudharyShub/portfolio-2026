@@ -5,11 +5,12 @@ const experiences = [
   {
     role: "Software Engineer",
     company: "Tech Company",
-    period: "2022 — Present",
-    desc: "I work as a Frontend Developer specializing in React.js, Next.js, JavaScript, HTML, and CSS, building responsive, user-friendly interfaces with clean and optimized code. I collaborate closely with teams to translate requirements into functional UI and ensure smooth user experiences. Alongside frontend work, I also have hands-on experience with backend technologies like Node.js, Express, and MongoDB, enabling me to handle APIs, basic server logic, and end-to-end functionality when needed.",
+    period: "Sept.2022 — March.2026",
+    desc: "I work as a Frontend Developer specializing in React.js, Next.js, Electron.js, JavaScript, HTML, and CSS, building responsive, user-friendly interfaces with clean and optimized code. I collaborate closely with teams to translate requirements into functional UI and ensure smooth user experiences. Alongside frontend work, I also have hands-on experience with backend technologies like Node.js, Express, and MongoDB, enabling me to handle APIs, basic server logic, and end-to-end functionality when needed.",
     tags: [
       "React.js",
       "Next.js",
+      "Electron.js",
       "JavaScript",
       "HTML",
       "CSS",
@@ -28,7 +29,7 @@ const experiences = [
   {
     role: "Mechanical Engineer",
     company: "Manufactuing Sector",
-    period: "2020 — 2022",
+    period: "June.2020 — June.2022",
     desc: "I led a team of 10-12 technicians in the maintenance department of a bathmat manufacturing plant, overseeing both preventive and breakdown maintenance to ensure uninterrupted production. I developed maintenance schedules, identified root causes of equipment failures, and streamlined repair processes to reduce downtime. I also coordinated closely with production teams, maintained documentation, and ensured adherence to safety and quality standards.",
     tags: [
       "Supervision",

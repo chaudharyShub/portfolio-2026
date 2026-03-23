@@ -39,22 +39,22 @@ const categories: { title: string; skills: Skill[] }[] = [
       { name: "MUI", level: 85, color: "#007FFF", icon: SiMui },
       { name: "HTML5", level: 95, color: "#E34F26", icon: SiHtml5 },
       { name: "CSS3", level: 92, color: "#1572B6", icon: SiCss3 },
-      { name: "Electron.js", level: 82, color: "#764ABC", icon: SiElectron },
+      { name: "Electron.js", level: 90, color: "#764ABC", icon: SiElectron },
     ],
   },
   {
     title: "Backend",
     skills: [
-      { name: "Node.js", level: 92, color: "#339933", icon: SiNodedotjs },
-      { name: "Express.js", level: 90, color: "#FFFFFF", icon: SiExpress },
-      { name: "MongoDB", level: 88, color: "#47A248", icon: SiMongodb },
+      { name: "Node.js", level: 90, color: "#339933", icon: SiNodedotjs },
+      { name: "Express.js", level: 70, color: "#FFFFFF", icon: SiExpress },
+      { name: "MongoDB", level: 70, color: "#47A248", icon: SiMongodb },
     ],
   },
   {
     title: "Tools & DevOps",
     skills: [
       { name: "Git", level: 90, color: "#F05032", icon: SiGit },
-      { name: "Docker", level: 75, color: "#2496ED", icon: SiDocker },
+      { name: "Docker", level: 70, color: "#2496ED", icon: SiDocker },
     ],
   },
   {

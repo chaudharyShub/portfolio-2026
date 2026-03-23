@@ -30,12 +30,14 @@ const dots = Array.from({ length: 30 }, (_, i) => ({
 // ];
 
 const codeLines = [
-  { text: `import React from "react";`, indent: 0 },
-  { text: `import { useEffect, useState } from "react";`, indent: 0 },
+  { text: `import React, { useEffect, useState } from 'react';`, indent: 0 },
+  { text: `import App from './App';`, indent: 0 },
   { text: "", indent: 0 },
-  { text: "const app = express();", indent: 0 },
-  { text: "db.connect(URI);", indent: 0 },
-  { text: "export default App;", indent: 0 },
+  { text: "interface CodeCraftsmanT {", indent: 0 },
+  { text: "name: string;", indent: 2 },
+  { text: "buildsCoolStuff: boolean;", indent: 2 },
+  { text: "lovesCleanCode: boolean;", indent: 2 },
+  { text: "}", indent: 0 },
 ];
 
 const HeroSection = () => {
@@ -113,6 +115,7 @@ const HeroSection = () => {
               3+ years of experience crafting modern web applications with{" "}
               <span className="text-foreground font-medium">React.js,</span>{" "}
               <span className="text-foreground font-medium">Next.js,</span>{" "}
+              <span className="text-foreground font-medium">Electron.js,</span>{" "}
               <span className="text-foreground font-medium">Express.js,</span>{" "}
               <span className="text-foreground font-medium">Node.js,</span> basically with the {" "}
               <span className="text-foreground font-medium">MERN stack</span>. I turn complex problems into elegant, scalable solutions.
