@@ -29,7 +29,7 @@ const experiences = [
     role: "Mechanical Engineer",
     company: "Manufactuing Sector",
     period: "2020 — 2022",
-    desc: "I led a team of 10–12 technicians in the maintenance department of a bathmat manufacturing plant, overseeing both preventive and breakdown maintenance to ensure uninterrupted production. I developed maintenance schedules, identified root causes of equipment failures, and streamlined repair processes to reduce downtime. I also coordinated closely with production teams, maintained documentation, and ensured adherence to safety and quality standards.",
+    desc: "I led a team of 10-12 technicians in the maintenance department of a bathmat manufacturing plant, overseeing both preventive and breakdown maintenance to ensure uninterrupted production. I developed maintenance schedules, identified root causes of equipment failures, and streamlined repair processes to reduce downtime. I also coordinated closely with production teams, maintained documentation, and ensured adherence to safety and quality standards.",
     tags: [
       "Supervision",
       "Preventive Maintenance",
