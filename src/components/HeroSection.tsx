@@ -106,13 +106,13 @@ const HeroSection = () => {
             <h1 className="text-5xl md:text-6xl lg:text-[4rem] font-display font-black leading-[1.05] mb-8 tracking-tighter">
               Hi, I'm a
               <br />
-              <span className="text-gradient-primary">Frontend</span>
+              <span className="text-gradient-primary">FullStack</span>
               <br />
               Developer
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
-              3+ years of experience crafting modern web applications with{" "}
+              3.5 years of experience crafting modern web applications with{" "}
               <span className="text-foreground font-medium">React.js,</span>{" "}
               <span className="text-foreground font-medium">Next.js,</span>{" "}
               <span className="text-foreground font-medium">Electron.js,</span>{" "}
