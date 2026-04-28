@@ -52,7 +52,7 @@ const Navbar = () => {
           <span className="w-8 h-8 rounded-lg bg-[#4589ff]/10 border border-[#4589ff]/30 flex items-center justify-center text-[#4589ff] text-xs">
             {">_"}
           </span>
-          <span className="tracking-tight">_shubham_chaudhary_</span>
+          <span className="tracking-tight">shubham_chaudhary.dev</span>
         </a>
 
         <div className="hidden md:flex items-center gap-2 lg:gap-8">

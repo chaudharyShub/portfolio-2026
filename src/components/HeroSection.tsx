@@ -15,12 +15,12 @@ const floatingWords = [
   { text: "API", x: "38%", y: "18%", color: "hsl(var(--highlight-pink))", delay: 0 },
   { text: "{ }", x: "75%", y: "15%", color: "hsl(var(--highlight-purple))", delay: 1 },
   { text: "</>", x: "22%", y: "18%", color: "hsl(var(--primary))", delay: 1.8 },
-  { text: "x1", x: "85%", y: "35%", color: "hsl(var(--highlight-green))", delay: 1.5 },
   { text: "npm", x: "82%", y: "65%", color: "hsl(var(--highlight-orange))", delay: 0.8 },
   { text: "TCP", x: "28%", y: "75%", color: "hsl(var(--highlight-purple))", delay: 2 },
   { text: "DOM", x: "65%", y: "88%", color: "hsl(var(--highlight-yellow))", delay: 1.2 },
   { text: "JSX", x: "55%", y: "95%", color: "hsl(var(--highlight-blue))", delay: 0.3 },
   { text: "=>", x: "22%", y: "62%", color: "hsl(var(--highlight-green))", delay: 0.6 },
+  { text: "R&D", x: "10%", y: "75%", color: "hsl(var(--highlight-green))", delay: 2.5 },
 ];
 
 const dotColors = [
@@ -97,7 +97,7 @@ const codeLines: CodeLine[] = [
       { t: "bracket", v: "{" },
     ],
   },
-  { indent: 2, tokens: prop("name", { t: "string", v: '"Software Engineer"' }) },
+  { indent: 2, tokens: prop("name", { t: "string", v: '"Shubham Chaudhary"' }) },
   { indent: 2, tokens: prop("experience", { t: "string", v: '"3.5+ years"' }) },
   { indent: 2, tokens: prop("passion", { t: "string", v: '"Building scalable web apps"' }) },
   { indent: 2, tokens: prop("front_end", ...arr("React", "Next.js", "Tailwind")) },
