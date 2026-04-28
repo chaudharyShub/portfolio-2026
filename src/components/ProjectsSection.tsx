@@ -198,8 +198,7 @@ const ProjectsSection = () => {
                         href={project.github}
                         target="_blank"
                         rel="noreferrer"
-                        aria-label="GitHub repository"
-                        className="glass-icon-btn-sm"
+                        className="w-7 h-7 rounded-md border border-border/60 bg-black/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
                       >
                         <Github size={13} />
                       </a>
@@ -209,8 +208,7 @@ const ProjectsSection = () => {
                         href={project.live}
                         target="_blank"
                         rel="noreferrer"
-                        aria-label="Live demo"
-                        className="glass-icon-btn-sm"
+                        className="w-7 h-7 rounded-md border border-border/60 bg-black/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
                       >
                         <ExternalLink size={13} />
                       </a>

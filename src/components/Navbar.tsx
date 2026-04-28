@@ -74,9 +74,11 @@ const Navbar = () => {
           })}
         </div>
 
-        <a href="#contact" className="glass-btn !py-2 font-bold">
-          <span className="glass-shine" aria-hidden />
-          <span className="relative">Let&apos;s Talk</span>
+        <a
+          href="#contact"
+          className="hidden md:inline-flex px-6 py-2 rounded-lg border border-[#1e293b] text-white text-sm font-bold bg-black/50 backdrop-blur-sm hover:bg-white/5 transition-all"
+        >
+          Let's Talk
         </a>
       </div>
     </motion.nav>

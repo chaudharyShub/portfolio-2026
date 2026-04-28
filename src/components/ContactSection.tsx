@@ -367,7 +367,7 @@ const ContactSection = () => {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={s.label}
-                    className="glass-icon-btn !w-10 !h-10 !rounded-lg"
+                    className="w-10 h-10 rounded-lg border border-border bg-black/30 flex items-center justify-center text-muted-foreground hover:text-white hover:border-white/20 hover:-translate-y-0.5 transition-all"
                   >
                     <s.icon size={16} />
                   </a>
@@ -450,23 +450,21 @@ const ContactSection = () => {
                 <button
                   type="submit"
                   disabled={status === "submitting" || status === "success"}
-                  className="group/btn glass-btn-primary w-full !py-3.5 gap-2 disabled:opacity-90"
-                  style={
-                    status === "success"
-                      ? {
-                          background:
-                            "linear-gradient(135deg, hsl(var(--highlight-green) / 0.45), hsl(var(--highlight-cyan) / 0.45))",
-                          borderColor: "hsl(var(--highlight-green) / 0.6)",
-                          boxShadow:
-                            "inset 0 1px 0 hsl(0 0% 100% / 0.18), 0 8px 28px hsl(var(--highlight-green) / 0.45)",
-                        }
-                      : undefined
-                  }
+                  className="group/btn w-full relative overflow-hidden rounded-lg font-bold text-white py-3.5 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-90"
+                  style={{
+                    background:
+                      status === "success"
+                        ? "linear-gradient(135deg, hsl(var(--highlight-green)), hsl(var(--highlight-cyan)))"
+                        : "linear-gradient(135deg, hsl(var(--highlight-purple)), hsl(var(--primary)))",
+                    boxShadow:
+                      status === "success"
+                        ? "0 4px 20px hsl(var(--highlight-green) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)"
+                        : "0 4px 20px hsl(var(--primary) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)",
+                  }}
                 >
-                  <span className="glass-shine" aria-hidden />
                   <span
                     aria-hidden
-                    className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"
+                    className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:translate-x-[400%] transition-transform duration-1000 ease-in-out"
                   />
                   {status === "submitting" ? (
                     <>

@@ -217,25 +217,25 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <a href="#projects" className="glass-btn-primary font-bold">
-                <span className="glass-shine" aria-hidden />
-                <span className="relative">View My Work</span>
+              <a
+                href="#projects"
+                className="px-6 py-3 rounded-lg font-bold bg-[#4589ff] hover:bg-[#3273dc] transition-all text-white shadow-[0_0_20px_rgba(69,137,255,0.3)]"
+              >
+                View My Work
               </a>
             </div>
 
             <div className="flex gap-4">
               {[
-                { icon: Github, href: "https://github.com/chaudharyShub", label: "GitHub" },
-                { icon: Linkedin, href: "https://www.linkedin.com/in/shubham-chaudhary-4398bba8", label: "LinkedIn" },
-                { icon: Mail, href: "mailto:sc07807cs@gmail.com", label: "Email" },
-              ].map(({ icon: Icon, href, label }, i) => (
+                { icon: Github, href: "https://github.com/chaudharyShub" },
+                { icon: Linkedin, href: "https://www.linkedin.com/in/shubham-chaudhary-4398bba8 " },
+                { icon: Mail, href: "mailto:sc07807cs@gmail.com" },
+              ].map(({ icon: Icon, href }, i) => (
                 <a
                   key={i}
                   href={href}
                   target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className="glass-icon-btn"
+                  className="w-12 h-12 rounded-xl border border-[#1e293b] bg-black/40 flex items-center justify-center text-muted-foreground hover:text-white hover:border-white/20 transition-all hover:-translate-y-1"
                 >
                   <Icon size={20} />
                 </a>
@@ -245,12 +245,12 @@ const HeroSection = () => {
 
           {/* Right code window */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="block mt-6 lg:mt-0"
+            className="hidden lg:block"
           >
-            <div className="relative max-w-md mx-auto lg:ml-auto lg:mr-0">
+            <div className="relative max-w-md ml-auto">
               {/* Ambient color bloom behind the card */}
               <div
                 aria-hidden
