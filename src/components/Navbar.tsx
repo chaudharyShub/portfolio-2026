@@ -52,7 +52,7 @@ const Navbar = () => {
           <span className="w-8 h-8 rounded-lg bg-[#4589ff]/10 border border-[#4589ff]/30 flex items-center justify-center text-[#4589ff] text-xs">
             {">_"}
           </span>
-          <span className="tracking-tight">shubham_chaudhary</span>
+          <span className="tracking-tight">_shubham_chaudhary_</span>
         </a>
 
         <div className="hidden md:flex items-center gap-2 lg:gap-8">
@@ -76,7 +76,7 @@ const Navbar = () => {
 
         <a
           href="#contact"
-          className="hidden md:inline-flex px-6 py-2 rounded-lg bg-[#4589ff] text-white text-sm font-bold hover:bg-[#3273dc] transition-all shadow-[0_0_15px_rgba(69,137,255,0.2)]"
+          className="hidden md:inline-flex px-6 py-2 rounded-lg border border-[#1e293b] text-white text-sm font-bold bg-black/50 backdrop-blur-sm hover:bg-white/5 transition-all"
         >
           Let's Talk
         </a>

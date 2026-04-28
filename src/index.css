@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -97,24 +97,59 @@
   }
 
   .floating-word {
-    @apply absolute font-mono text-lg italic pointer-events-none select-none;
-    opacity: 0.15;
+    @apply absolute font-mono text-lg font-semibold italic pointer-events-none select-none;
+    opacity: 0.55;
+    text-shadow:
+      0 0 8px currentColor,
+      0 0 18px currentColor,
+      0 1px 2px rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.02em;
   }
 
   .dot-particle {
     @apply absolute rounded-full pointer-events-none;
-    background: hsl(var(--primary) / 0.3);
+    background: hsl(var(--primary) / 0.9);
+    box-shadow:
+      0 0 6px hsl(var(--primary) / 0.8),
+      0 0 14px hsl(var(--primary) / 0.5);
   }
 
   .network-line {
     @apply absolute pointer-events-none;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.08), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.35), transparent);
     height: 1px;
+    box-shadow: 0 0 6px hsl(var(--primary) / 0.25);
   }
 
   .code-window {
     @apply bg-card border border-border rounded-xl overflow-hidden;
-    box-shadow: 0 8px 32px hsl(var(--background) / 0.6);
+    box-shadow:
+      0 8px 32px hsl(var(--background) / 0.6),
+      0 0 0 1px hsl(var(--primary) / 0.05),
+      inset 0 1px 0 hsl(0 0% 100% / 0.04);
+  }
+
+  .animated-border {
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--border-angle),
+      hsl(var(--highlight-purple)) 0deg,
+      hsl(var(--primary)) 90deg,
+      hsl(var(--highlight-pink)) 180deg,
+      hsl(var(--highlight-cyan)) 270deg,
+      hsl(var(--highlight-purple)) 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: border-spin 9s linear infinite;
   }
 
   .progress-bar-track {
@@ -126,6 +161,18 @@
     color: hsl(var(--primary));
     border-color: hsl(var(--primary) / 0.3);
     background: hsl(var(--primary) / 0.08);
+  }
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
   }
 }
 

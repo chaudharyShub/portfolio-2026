@@ -32,16 +32,16 @@ const stats = [
   { value: "10K+", label: "Lines of Code" },
 ];
 
-const codeBlock = `const developer = {
-  name: "Software Engineer",
-  experience: "3+ years",
-  passion: "Building scalable web apps",
-  front_end: ["React.js", "Next.js", "Electron.js", "Tailwind CSS"],
-  back_end: ["Node.js", "Express.js", "MongoDB"],
-  cloud: ["Docker", "EC2", "S3", "Lambda"],
-  coffee: "Moderate",
-  ginger_tea: "Infinity",
-};`;
+// const codeBlock = `const developer = {
+//   name: "Software Engineer",
+//   experience: "3+ years",
+//   passion: "Building scalable web apps",
+//   front_end: ["React.js", "Next.js", "Electron.js", "Tailwind CSS"],
+//   back_end: ["Node.js", "Express.js", "MongoDB"],
+//   cloud: ["Docker", "EC2", "S3", "Lambda"],
+//   coffee: "Moderate",
+//   ginger_tea: "Infinity",
+// };`;
 
 const containerVariants = {
   hidden: {},
@@ -112,7 +112,7 @@ const AboutSection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-0"
         >
           {stats.map((stat, i) => (
             <motion.div key={i} variants={itemVariants} className="text-center">
@@ -125,7 +125,7 @@ const AboutSection = () => {
         </motion.div>
 
         {/* Code block */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -198,7 +198,7 @@ const AboutSection = () => {
               })}
             </code>
           </pre>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

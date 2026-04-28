@@ -4,7 +4,24 @@ import { Briefcase } from "lucide-react";
 const experiences = [
   {
     role: "Software Engineer",
-    company: "Tech Company",
+    company: "ShepHertz Technologies",
+    period: "April.2026 — Current",
+    desc: "Developing cross-platform desktop applications using Electron.js, collaborating on features, optimizing performance, and gaining experience with modern tools and integrations.",
+    tags: [
+      "React.js",
+      "Electron.js",
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "Tailwind",
+      "TypeScript",
+      "Git",
+      "Cursor AI",
+    ],
+  },
+  {
+    role: "Software Engineer",
+    company: "Quokka Labs",
     period: "Sept.2022 — March.2026",
     desc: "I work as a Frontend Developer specializing in React.js, Next.js, Electron.js, JavaScript, HTML, and CSS, building responsive, user-friendly interfaces with clean and optimized code. I collaborate closely with teams to translate requirements into functional UI and ensure smooth user experiences. Alongside frontend work, I also have hands-on experience with backend technologies like Node.js, Express, and MongoDB, enabling me to handle APIs, basic server logic, and end-to-end functionality when needed.",
     tags: [
@@ -28,7 +45,7 @@ const experiences = [
   },
   {
     role: "Mechanical Engineer",
-    company: "Manufactuing Sector",
+    company: "Riviera Home Furnishings",
     period: "June.2020 — June.2022",
     desc: "I led a team of 10-12 technicians in the maintenance department of a bathmat manufacturing plant, overseeing both preventive and breakdown maintenance to ensure uninterrupted production. I developed maintenance schedules, identified root causes of equipment failures, and streamlined repair processes to reduce downtime. I also coordinated closely with production teams, maintained documentation, and ensured adherence to safety and quality standards.",
     tags: [
