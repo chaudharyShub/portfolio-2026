@@ -52,9 +52,12 @@ const ScrollToTop = () => {
           className="fixed bottom-6 right-6 z-[60] w-12 h-12 rounded-full flex items-center justify-center group"
           style={{
             background:
-              "linear-gradient(135deg, hsl(var(--highlight-purple)), hsl(var(--primary)))",
+              "linear-gradient(135deg, hsl(var(--highlight-purple) / 0.32), hsl(var(--primary) / 0.32))",
+            border: "1px solid hsl(var(--primary) / 0.4)",
+            backdropFilter: "blur(14px) saturate(160%)",
+            WebkitBackdropFilter: "blur(14px) saturate(160%)",
             boxShadow:
-              "0 8px 24px hsl(var(--primary) / 0.45), 0 0 0 1px hsl(0 0% 100% / 0.08) inset",
+              "inset 0 1px 0 hsl(0 0% 100% / 0.15), 0 8px 24px hsl(var(--primary) / 0.35)",
           }}
         >
           {/* Progress ring */}
