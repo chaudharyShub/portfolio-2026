@@ -9,18 +9,74 @@ import {
   Circle,
   Sparkles,
 } from "lucide-react";
+import { useLiveDuration, formatLiveDuration } from "@/hooks/useLiveDuration";
+import LiveDurationInline from "@/components/LiveDuration";
 
 const floatingWords = [
-  { text: "SSH", x: "45%", y: "5%", color: "hsl(var(--highlight-cyan))", delay: 0.5 },
-  { text: "API", x: "38%", y: "18%", color: "hsl(var(--highlight-pink))", delay: 0 },
-  { text: "{ }", x: "75%", y: "15%", color: "hsl(var(--highlight-purple))", delay: 1 },
+  {
+    text: "SSH",
+    x: "45%",
+    y: "5%",
+    color: "hsl(var(--highlight-cyan))",
+    delay: 0.5,
+  },
+  {
+    text: "API",
+    x: "38%",
+    y: "18%",
+    color: "hsl(var(--highlight-pink))",
+    delay: 0,
+  },
+  {
+    text: "{ }",
+    x: "75%",
+    y: "15%",
+    color: "hsl(var(--highlight-purple))",
+    delay: 1,
+  },
   { text: "</>", x: "22%", y: "18%", color: "hsl(var(--primary))", delay: 1.8 },
-  { text: "npm", x: "82%", y: "65%", color: "hsl(var(--highlight-orange))", delay: 0.8 },
-  { text: "TCP", x: "28%", y: "75%", color: "hsl(var(--highlight-purple))", delay: 2 },
-  { text: "DOM", x: "65%", y: "88%", color: "hsl(var(--highlight-yellow))", delay: 1.2 },
-  { text: "JSX", x: "55%", y: "95%", color: "hsl(var(--highlight-blue))", delay: 0.3 },
-  { text: "=>", x: "22%", y: "62%", color: "hsl(var(--highlight-green))", delay: 0.6 },
-  { text: "R&D", x: "10%", y: "75%", color: "hsl(var(--highlight-green))", delay: 2.5 },
+  {
+    text: "npm",
+    x: "82%",
+    y: "65%",
+    color: "hsl(var(--highlight-orange))",
+    delay: 0.8,
+  },
+  {
+    text: "TCP",
+    x: "28%",
+    y: "75%",
+    color: "hsl(var(--highlight-purple))",
+    delay: 2,
+  },
+  {
+    text: "DOM",
+    x: "65%",
+    y: "88%",
+    color: "hsl(var(--highlight-yellow))",
+    delay: 1.2,
+  },
+  {
+    text: "JSX",
+    x: "55%",
+    y: "95%",
+    color: "hsl(var(--highlight-blue))",
+    delay: 0.3,
+  },
+  {
+    text: "=>",
+    x: "22%",
+    y: "62%",
+    color: "hsl(var(--highlight-green))",
+    delay: 0.6,
+  },
+  {
+    text: "R&D",
+    x: "10%",
+    y: "75%",
+    color: "hsl(var(--highlight-green))",
+    delay: 2.5,
+  },
 ];
 
 const dotColors = [
@@ -76,17 +132,14 @@ const arr = (...items: string[]): Token[] => {
   return out;
 };
 
-const prop = (
-  key: string,
-  ...value: Token[]
-): Token[] => [
+const prop = (key: string, ...value: Token[]): Token[] => [
   { t: "prop", v: key },
   { t: "op", v: ": " },
   ...value,
   { t: "punct", v: "," },
 ];
 
-const codeLines: CodeLine[] = [
+const buildCodeLines = (experienceValue: string): CodeLine[] => [
   { tokens: [{ t: "comment", v: "// developer profile" }] },
   {
     tokens: [
@@ -97,11 +150,26 @@ const codeLines: CodeLine[] = [
       { t: "bracket", v: "{" },
     ],
   },
-  { indent: 2, tokens: prop("name", { t: "string", v: '"Shubham Chaudhary"' }) },
-  { indent: 2, tokens: prop("experience", { t: "string", v: '"3.5+ years"' }) },
-  { indent: 2, tokens: prop("passion", { t: "string", v: '"Building scalable web apps"' }) },
-  { indent: 2, tokens: prop("front_end", ...arr("React", "Next.js", "Tailwind")) },
-  { indent: 2, tokens: prop("back_end", ...arr("Node.js", "Express", "MongoDB")) },
+  {
+    indent: 2,
+    tokens: prop("name", { t: "string", v: '"Shubham Chaudhary"' }),
+  },
+  {
+    indent: 2,
+    tokens: prop("experience", { t: "string", v: `"${experienceValue}"` }),
+  },
+  {
+    indent: 2,
+    tokens: prop("passion", { t: "string", v: '"Building scalable web apps"' }),
+  },
+  {
+    indent: 2,
+    tokens: prop("front_end", ...arr("React", "Next.js", "Tailwind")),
+  },
+  {
+    indent: 2,
+    tokens: prop("back_end", ...arr("Node.js", "Express", "MongoDB")),
+  },
   { indent: 2, tokens: prop("cloud", ...arr("Docker", "AWS", "Lambda")) },
   { indent: 2, tokens: prop("coffee", { t: "string", v: '"Moderate"' }) },
   { indent: 2, tokens: prop("ginger_tea", { t: "string", v: '"Infinity"' }) },
@@ -114,8 +182,14 @@ const codeLines: CodeLine[] = [
 ];
 
 const HeroSection = () => {
+  const liveDuration = useLiveDuration();
+  const codeLines = buildCodeLines(formatLiveDuration(liveDuration));
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center overflow-hidden"
+    >
       {/* Floating dots */}
       {dots.map((dot, i) => (
         <motion.div
@@ -130,7 +204,11 @@ const HeroSection = () => {
             boxShadow: `0 0 8px ${dot.color}, 0 0 16px ${dot.color}`,
           }}
           animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.4, 1] }}
-          transition={{ duration: 3 + Math.random() * 2, repeat: Infinity, delay: dot.delay }}
+          transition={{
+            duration: 3 + Math.random() * 2,
+            repeat: Infinity,
+            delay: dot.delay,
+          }}
         />
       ))}
 
@@ -159,8 +237,17 @@ const HeroSection = () => {
           key={i}
           className="floating-word font-mono text-base md:text-lg"
           style={{ left: word.x, top: word.y, color: word.color }}
-          animate={{ y: [0, -15, 0], rotate: [-2, 2, -2], opacity: [0.5, 0.85, 0.5] }}
-          transition={{ duration: 5 + i * 0.3, repeat: Infinity, delay: word.delay, ease: "easeInOut" }}
+          animate={{
+            y: [0, -15, 0],
+            rotate: [-2, 2, -2],
+            opacity: [0.5, 0.85, 0.5],
+          }}
+          transition={{
+            duration: 5 + i * 0.3,
+            repeat: Infinity,
+            delay: word.delay,
+            ease: "easeInOut",
+          }}
         >
           {word.text}
         </motion.span>
@@ -194,8 +281,19 @@ const HeroSection = () => {
               transition={{ delay: 0.4 }}
               className="section-badge mb-8 py-2 px-5 bg-[#0a192f] border-[#1e293b] flex items-center gap-2"
             >
-              <span className="mr-2 inline-block w-[10px] h-[10px] rounded-full bg-highlight-green shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-              <span className="text-[#4589ff] text-xs font-semibold">Available for opportunities</span>
+              {/* <span className="mr-2 inline-block w-[10px] h-[10px] rounded-full bg-highlight-green shadow-[0_0_10px_rgba(34,197,94,0.5)]" /> */}
+              <motion.span
+                className="relative inline-block w-1.5 h-1.5 rounded-full bg-highlight-green shadow-[0_0_6px_hsl(var(--highlight-green))]"
+                animate={{ opacity: [1, 0.35, 1], scale: [1, 1.15, 1] }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <span className="text-[#4589ff] ml-2 text-xs font-semibold">
+                Available for opportunities
+              </span>
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-[4rem] font-display font-black leading-[1.05] mb-8 tracking-tighter">
@@ -207,13 +305,16 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
-              3.5+ years of experience crafting modern web applications with{" "}
+              <LiveDurationInline /> of experience crafting modern web
+              applications with{" "}
               <span className="text-foreground font-medium">React.js,</span>{" "}
               <span className="text-foreground font-medium">Next.js,</span>{" "}
               <span className="text-foreground font-medium">Electron.js,</span>{" "}
               <span className="text-foreground font-medium">Express.js,</span>{" "}
-              <span className="text-foreground font-medium">Node.js,</span> basically with the {" "}
-              <span className="text-foreground font-medium">MERN stack</span>. I turn complex problems into elegant, scalable solutions.
+              <span className="text-foreground font-medium">Node.js,</span>{" "}
+              basically with the{" "}
+              <span className="text-foreground font-medium">MERN stack</span>. I
+              turn complex problems into elegant, scalable solutions.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
@@ -228,7 +329,10 @@ const HeroSection = () => {
             <div className="flex gap-4">
               {[
                 { icon: Github, href: "https://github.com/chaudharyShub" },
-                { icon: Linkedin, href: "https://www.linkedin.com/in/shubham-chaudhary-4398bba8 " },
+                {
+                  icon: Linkedin,
+                  href: "https://www.linkedin.com/in/shubham-chaudhary-4398bba8 ",
+                },
                 { icon: Mail, href: "mailto:sc07807cs@gmail.com" },
               ].map(({ icon: Icon, href }, i) => (
                 <a
@@ -321,19 +425,19 @@ const HeroSection = () => {
                           style={{ paddingLeft: (line.indent ?? 0) * 10 }}
                           className="whitespace-pre"
                         >
-                          {line.tokens.length === 0 ? (
-                            "\u00A0"
-                          ) : (
-                            line.tokens.map((tok, j) => (
-                              <span
-                                key={j}
-                                style={{ color: tokenColor[tok.t] }}
-                                className={tok.t === "comment" ? "italic" : ""}
-                              >
-                                {tok.v}
-                              </span>
-                            ))
-                          )}
+                          {line.tokens.length === 0
+                            ? "\u00A0"
+                            : line.tokens.map((tok, j) => (
+                                <span
+                                  key={j}
+                                  style={{ color: tokenColor[tok.t] }}
+                                  className={
+                                    tok.t === "comment" ? "italic" : ""
+                                  }
+                                >
+                                  {tok.v}
+                                </span>
+                              ))}
                           {i === codeLines.length - 1 && (
                             <motion.span
                               className="inline-block w-[7px] h-[15px] align-middle ml-1 rounded-[1px]"
@@ -355,12 +459,14 @@ const HeroSection = () => {
                   <div className="flex items-center justify-between gap-3 px-4 py-2 border-t border-border bg-gradient-to-t from-primary/[0.06] to-transparent text-[10px] font-mono">
                     <div className="flex items-center gap-3 text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <GitBranch size={11} className="text-highlight-purple" />
+                        <GitBranch
+                          size={11}
+                          className="text-highlight-purple"
+                        />
                         main
                       </span>
                       <span className="flex items-center gap-1 text-highlight-green">
-                        <Circle size={6} className="fill-current" />
-                        0 problems
+                        <Circle size={6} className="fill-current" />0 problems
                       </span>
                     </div>
                     <div className="flex items-center gap-3 text-muted-foreground">

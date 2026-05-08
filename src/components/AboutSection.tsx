@@ -10,6 +10,8 @@ import {
   Zap,
   ArrowUpRight,
 } from "lucide-react";
+import LiveDurationInline, { LiveTotalYears } from "@/components/LiveDuration";
+import { useLiveDuration } from "@/hooks/useLiveDuration";
 
 type AccentCard = {
   icon: typeof Code2;
@@ -51,9 +53,23 @@ const cards: AccentCard[] = [
   },
 ];
 
-const stats = [
-  { icon: Zap, value: 3, suffix: "+", label: "Years Experience" },
-  { icon: Layers, value: 3, suffix: "+", label: "Projects Delivered" },
+type Stat = {
+  icon: typeof Code2;
+  value: number;
+  suffix: string;
+  label: string;
+  /**
+   * If true, `value` is computed live from the SE-experience counter
+   * (full years elapsed since 26 Sept 2022) and re-evaluates every render.
+   * Used so the "Years Experience" stat auto-rolls 3 → 4 → 5 … without
+   * manual edits.
+   */
+  live?: boolean;
+};
+
+const stats: Stat[] = [
+  { icon: Zap, value: 0, suffix: "+", label: "Years Experience", live: true },
+  { icon: Layers, value: 4, suffix: "+", label: "Projects Delivered" },
   { icon: Sparkles, value: 5, suffix: "+", label: "Happy Clients" },
   { icon: Code2, value: 10, suffix: "K+", label: "Lines of Code" },
 ];
@@ -89,6 +105,23 @@ const Counter = ({ to, suffix }: { to: number; suffix: string }) => {
       {suffix}
     </span>
   );
+};
+
+/**
+ * Wraps `Counter` so the target value reflects the live SE-experience years
+ * (full years elapsed since 26 Sept 2022). The Counter only re-animates if
+ * `to` actually changes, so this stays visually identical to the static
+ * Counter except it auto-bumps once per year.
+ */
+const LiveYearsCounter = ({
+  priorYears = 0,
+  suffix,
+}: {
+  priorYears?: number;
+  suffix: string;
+}) => {
+  const d = useLiveDuration();
+  return <Counter to={priorYears + d.years} suffix={suffix} />;
 };
 
 const AboutSection = () => {
@@ -201,16 +234,18 @@ const AboutSection = () => {
               />
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                 With{" "}
-                <span className="text-foreground font-semibold">5+ years</span>{" "}
-                of total experience —{" "}
+                <span className="text-foreground font-semibold">
+                  <LiveTotalYears priorYears={2} />
+                </span>{" "}
+                of total experience -{" "}
                 <span className="text-foreground">
                   2 years as a Mechanical Engineer
                 </span>{" "}
                 &amp;{" "}
                 <span className="text-foreground">
-                  3.5 years as a Software Engineer
+                  <LiveDurationInline showLive={false} /> as a Software Engineer
                 </span>{" "}
-                — I&apos;ve navigated a unique career path that fuses
+                - I&apos;ve navigated a unique career path that fuses
                 engineering precision with creative web development. I&apos;m a
                 full-stack engineer with hands-on experience building{" "}
                 <span className="text-highlight-purple font-medium">
@@ -389,7 +424,14 @@ const AboutSection = () => {
                     className="mx-auto mb-3 text-muted-foreground/60 group-hover:text-primary transition-colors"
                   />
                   <div className="text-3xl md:text-4xl font-display font-bold text-gradient-primary mb-1.5 leading-none">
-                    <Counter to={stat.value} suffix={stat.suffix} />
+                    {stat.live ? (
+                      <LiveYearsCounter
+                        priorYears={stat.value}
+                        suffix={stat.suffix}
+                      />
+                    ) : (
+                      <Counter to={stat.value} suffix={stat.suffix} />
+                    )}
                   </div>
                   <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                     {stat.label}

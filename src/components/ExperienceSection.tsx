@@ -23,10 +23,30 @@ type Experience = {
 
 const experiences: Experience[] = [
   {
+    role: "Frontend Developer",
+    company: "Koru UX",
+    period: "May 2026 — ",
+    desc: "Frontend engineer specializing in React, Next.js, and Electron — building responsive, user-friendly interfaces with clean, optimized code. Translated requirements into production UI.",
+    tags: [
+      "React.js",
+      "Next.js",
+      "Electron.js",
+      "TypeScript",
+      "Tailwind",
+      "Material UI",
+      "Redux",
+      "Git",
+    ],
+    icon: Briefcase,
+    accent: "hsl(var(--highlight-pink))",
+    accent2: "hsl(var(--highlight-purple))",
+    current: true,
+  },
+  {
     role: "Software Engineer",
     company: "ShepHertz Technologies",
-    period: "April 2026 — Current",
-    desc: "Building cross-platform desktop applications using Electron.js, collaborating on features, optimizing performance, and shipping with modern tools and integrations.",
+    period: "April 2026 — May 2026",
+    desc: "Building cross-platform desktop web browser using Electron.js, collaborating on features, optimizing performance, and shipping with modern tools and integrations.",
     tags: [
       "React.js",
       "Electron.js",
@@ -39,7 +59,6 @@ const experiences: Experience[] = [
     icon: Code2,
     accent: "hsl(var(--highlight-purple))",
     accent2: "hsl(var(--primary))",
-    current: true,
   },
   {
     role: "Software Engineer",
