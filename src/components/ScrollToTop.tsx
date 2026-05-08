@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, animate, motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
 const SHOW_AFTER_PX = 400;
@@ -9,6 +9,13 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
+  /**
+   * When the user clicks the button we manually tween the ring down to 0 so
+   * it visually drains in sync with the smooth scroll-up. While this lock is
+   * active we ignore the scroll-driven progress updates (otherwise they'd
+   * fight the tween and cause flicker).
+   */
+  const drainingRef = useRef(false);
 
   useEffect(() => {
     const update = () => {
@@ -18,7 +25,7 @@ const ScrollToTop = () => {
       const ratio = docHeight > 0 ? Math.min(1, scrollTop / docHeight) : 0;
 
       setVisible(scrollTop > SHOW_AFTER_PX);
-      setProgress(ratio);
+      if (!drainingRef.current) setProgress(ratio);
     };
 
     update();
@@ -32,7 +39,21 @@ const ScrollToTop = () => {
   }, []);
 
   const handleClick = () => {
+    drainingRef.current = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Tween the ring from its current value down to 0. Easing matches the
+    // feel of the browser's smooth-scroll so the ring drains alongside it.
+    const controls = animate(progress, 0, {
+      duration: 0.8,
+      ease: [0.22, 0.61, 0.36, 1],
+      onUpdate: (v) => setProgress(v),
+      onComplete: () => {
+        drainingRef.current = false;
+      },
+    });
+
+    return () => controls.stop();
   };
 
   return (
@@ -84,7 +105,6 @@ const ScrollToTop = () => {
               strokeDasharray={CIRCUMFERENCE}
               strokeDashoffset={CIRCUMFERENCE * (1 - progress)}
               style={{
-                transition: "stroke-dashoffset 0.15s linear",
                 filter: "drop-shadow(0 0 4px hsl(0 0% 100% / 0.6))",
               }}
             />
