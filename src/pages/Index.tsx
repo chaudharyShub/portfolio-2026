@@ -1,23 +1,44 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
-import TechSection from "@/components/TechSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import ExperienceSection from "@/components/ExperienceSection";
-import ContactSection from "@/components/ContactSection";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Heart } from "lucide-react";
+
+// Sections below the fold are lazy-loaded so the hero paints fast.
+const AboutSection = lazy(() => import("@/components/AboutSection"));
+const TechSection = lazy(() => import("@/components/TechSection"));
+const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
+const ExperienceSection = lazy(() => import("@/components/ExperienceSection"));
+const ContactSection = lazy(() => import("@/components/ContactSection"));
+
+const SectionFallback = () => (
+  <div
+    aria-hidden
+    className="min-h-[40vh] w-full"
+    style={{ contain: "strict" }}
+  />
+);
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
-      <AboutSection />
-      <TechSection />
-      <ProjectsSection />
-      <ExperienceSection />
-      <ContactSection />
+      <Suspense fallback={<SectionFallback />}>
+        <AboutSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <TechSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ProjectsSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ExperienceSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ContactSection />
+      </Suspense>
       <ScrollToTop />
       <footer className="relative py-10 border-t border-border overflow-hidden">
         <div

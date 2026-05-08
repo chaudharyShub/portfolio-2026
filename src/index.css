@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -61,20 +61,52 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-body antialiased;
-  }
-
   html {
     scroll-behavior: smooth;
+    /* Always reserve scrollbar space so layouts don't shift when modals open */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    overflow-x: hidden;
+    /* Subtle, perf-cheap noise + ambient gradient. Static — never invalidates */
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(var(--highlight-purple) / 0.08), transparent 50%),
+      radial-gradient(ellipse 80% 50% at 50% 110%, hsl(var(--primary) / 0.08), transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+    color: hsl(var(--foreground));
+  }
+
+  /* Smooth, themed scrollbar (WebKit) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(var(--highlight-purple) / 0.6), hsl(var(--primary) / 0.6));
+    border-radius: 999px;
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(var(--highlight-purple)), hsl(var(--primary)));
   }
 }
 
 @layer utilities {
   .text-gradient-primary {
     @apply bg-clip-text text-transparent;
-    /* background-image: linear-gradient(135deg, hsl(217 100% 64%), hsl(322 100% 65%)); */
     background-image: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 58%), hsl(349 89% 60%));
+    background-size: 200% 200%;
+    animation: gradient-pan 12s ease-in-out infinite;
   }
 
   .text-gradient-highlight {
@@ -92,7 +124,6 @@
   }
 
   .card-glass {
-    /* @apply bg-card/60 backdrop-blur-sm border border-border/60 rounded-xl; */
     @apply bg-card border border-border rounded-xl;
   }
 
@@ -134,14 +165,12 @@
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: conic-gradient(
-      from var(--border-angle),
-      hsl(var(--highlight-purple)) 0deg,
-      hsl(var(--primary)) 90deg,
-      hsl(var(--highlight-pink)) 180deg,
-      hsl(var(--highlight-cyan)) 270deg,
-      hsl(var(--highlight-purple)) 360deg
-    );
+    background: conic-gradient(from var(--border-angle),
+        hsl(var(--highlight-purple)) 0deg,
+        hsl(var(--primary)) 90deg,
+        hsl(var(--highlight-pink)) 180deg,
+        hsl(var(--highlight-cyan)) 270deg,
+        hsl(var(--highlight-purple)) 360deg);
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -162,6 +191,81 @@
     border-color: hsl(var(--primary) / 0.3);
     background: hsl(var(--primary) / 0.08);
   }
+
+  /* Mouse-driven spotlight border. Pair with `useSpotlight` to set --mx/--my */
+  .spotlight-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background:
+      radial-gradient(220px circle at var(--mx, 50%) var(--my, -50%),
+        hsl(var(--primary) / 0.65),
+        hsl(var(--highlight-purple) / 0.35) 35%,
+        transparent 70%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 250ms ease;
+  }
+  .spotlight-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Card-internal radial light pool (`--mx`/`--my` driven). */
+  .spotlight-pool {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, -50%),
+        hsl(var(--primary) / 0.18),
+        transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .group:hover > .spotlight-pool,
+  .spotlight-host:hover > .spotlight-pool {
+    opacity: 1;
+  }
+
+  /* GPU hint utility */
+  .gpu {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  /* Marquee primitive */
+  .marquee {
+    --marquee-duration: 28s;
+    --marquee-direction: normal;
+  }
+  .marquee-track {
+    animation: marquee-scroll var(--marquee-duration) linear infinite;
+    animation-direction: var(--marquee-direction);
+    will-change: transform;
+  }
+  .marquee--hoverable:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Hide native cursor on browsers that have a fine pointer when our custom
+     cursor is mounted. CSS-only so it never costs JS. */
+  @media (hover: hover) and (pointer: fine) {
+    body.has-custom-cursor,
+    body.has-custom-cursor * {
+      cursor: none !important;
+    }
+  }
 }
 
 @property --border-angle {
@@ -173,6 +277,28 @@
 @keyframes border-spin {
   to {
     --border-angle: 360deg;
+  }
+}
+
+@keyframes gradient-pan {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
   }
 }
 
@@ -263,5 +389,31 @@
   50% {
     transform: translateY(8px);
     opacity: 1;
+  }
+}
+
+/* Respect users who explicitly request reduced motion. We still let the
+   page render; we just freeze the noisy stuff. */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animated-border,
+  .marquee-track {
+    animation: none !important;
+  }
+
+  .text-gradient-primary {
+    animation: none !important;
+    background-position: 0% 50% !important;
   }
 }

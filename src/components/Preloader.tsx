@@ -11,7 +11,7 @@ const messages = [
   "ready to render!",
 ];
 
-const TOTAL_MS = 2600;
+const TOTAL_MS = 1900;
 
 const Preloader = () => {
   const [show, setShow] = useState(true);
@@ -33,12 +33,11 @@ const Preloader = () => {
 
     const msgTimer = window.setInterval(() => {
       setMsgIdx((i) => Math.min(i + 1, messages.length - 1));
-    // }, Math.floor(TOTAL_MS / messages.length));
-    }, 500);
+    }, Math.floor(TOTAL_MS / messages.length));
 
     const hideTimer = window.setTimeout(() => {
       setShow(false);
-    }, TOTAL_MS + 350);
+    }, TOTAL_MS + 250);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -62,11 +61,10 @@ const Preloader = () => {
           initial={{ y: 0 }}
           exit={{
             y: "-100%",
-            transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] },
+            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
           }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-background overflow-hidden"
         >
-          {/* Ambient gradient bloom */}
           <div
             aria-hidden
             className="absolute inset-0 pointer-events-none"
@@ -76,7 +74,6 @@ const Preloader = () => {
             }}
           />
 
-          {/* Subtle scanlines for the CRT / terminal feel */}
           <div
             aria-hidden
             className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay"
@@ -86,8 +83,7 @@ const Preloader = () => {
             }}
           />
 
-          {/* Floating particles */}
-          {Array.from({ length: 16 }).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => (
             <motion.span
               key={i}
               className="absolute rounded-full pointer-events-none"
@@ -105,6 +101,7 @@ const Preloader = () => {
                   i % 2 === 0
                     ? "hsl(var(--primary))"
                     : "hsl(var(--highlight-purple))",
+                willChange: "transform, opacity",
               }}
               animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.8, 1.4, 0.8] }}
               transition={{
@@ -116,7 +113,6 @@ const Preloader = () => {
           ))}
 
           <div className="relative z-10 flex flex-col items-center gap-8 px-6">
-            {/* Brand mark */}
             <motion.div
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -147,7 +143,6 @@ const Preloader = () => {
               </div>
             </motion.div>
 
-            {/* Boot message + progress */}
             <div className="flex flex-col items-center gap-5 w-[min(80vw,320px)]">
               <div className="flex items-center gap-2 font-mono text-sm h-6 self-stretch justify-center">
                 <span className="text-highlight-green">$</span>
@@ -157,7 +152,7 @@ const Preloader = () => {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.25 }}
+                    transition={{ duration: 0.22 }}
                     className="text-foreground"
                   >
                     {messages[msgIdx]}
@@ -165,7 +160,6 @@ const Preloader = () => {
                 </AnimatePresence>
               </div>
 
-              {/* Progress bar */}
               <div className="w-full h-1.5 rounded-full bg-muted/50 overflow-hidden border border-border/60 relative">
                 <motion.div
                   className="h-full rounded-full"
@@ -177,12 +171,12 @@ const Preloader = () => {
                       "0 0 12px hsl(var(--primary) / 0.7), 0 0 4px hsl(var(--highlight-purple) / 0.6)",
                   }}
                 />
-                {/* Moving shimmer */}
                 <motion.div
                   className="absolute top-0 bottom-0 w-1/3 pointer-events-none"
                   style={{
                     background:
                       "linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.25), transparent)",
+                    willChange: "transform",
                   }}
                   animate={{ x: ["-100%", "350%"] }}
                   transition={{

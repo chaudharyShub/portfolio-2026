@@ -6,7 +6,6 @@ import {
   Github,
   Linkedin,
   Send,
-  Terminal,
   ArrowUpRight,
   Loader2,
   Check,
@@ -14,6 +13,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import TiltCard from "@/components/fx/TiltCard";
+import Magnetic from "@/components/fx/Magnetic";
+import SectionHeader from "@/components/fx/SectionHeader";
+import { useSpotlight } from "@/hooks/useSpotlight";
 
 const CONTACT_EMAIL = "sc07807cs@gmail.com";
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
@@ -72,6 +75,89 @@ const socials = [
   },
 ];
 
+const InfoCard = ({ item, index }: { item: InfoItem; index: number }) => {
+  const spotRef = useSpotlight<HTMLDivElement>();
+  const { icon: Icon, label, value, accent, accent2, href } = item;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-5% 0px" }}
+      transition={{ delay: index * 0.08, duration: 0.45 }}
+    >
+      <a
+        href={href || "#"}
+        className="group relative block"
+        onClick={(e) => !href && e.preventDefault()}
+      >
+        <TiltCard max={4} ease={0.2} lift={3} className="relative">
+          <div
+            aria-hidden
+            className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500 pointer-events-none"
+            style={{
+              background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+            }}
+          />
+          <div
+            ref={spotRef}
+            className="relative flex items-center gap-4 p-4 rounded-xl bg-card border border-border transition-colors duration-300 group-hover:border-transparent overflow-hidden"
+            style={
+              {
+                "--mx": "50%",
+                "--my": "-50%",
+              } as React.CSSProperties
+            }
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                background: `radial-gradient(220px circle at var(--mx) var(--my), ${accent}33, transparent 65%)`,
+              }}
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+              style={{
+                padding: "1px",
+                background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+                WebkitMask:
+                  "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                WebkitMaskComposite: "xor",
+                maskComposite: "exclude",
+              }}
+            />
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6"
+              style={{
+                background: `linear-gradient(135deg, ${accent}22, ${accent2}11)`,
+                border: `1px solid ${accent}33`,
+              }}
+            >
+              <Icon size={18} style={{ color: accent }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-0.5">
+                {label}
+              </p>
+              <p className="text-sm font-medium text-foreground truncate">
+                {value}
+              </p>
+            </div>
+            {href && (
+              <ArrowUpRight
+                size={16}
+                className="text-muted-foreground/40 group-hover:text-foreground group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all flex-shrink-0"
+              />
+            )}
+          </div>
+        </TiltCard>
+      </a>
+    </motion.div>
+  );
+};
+
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -101,7 +187,6 @@ const ContactSection = () => {
     );
     const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 
-    // Use a hidden anchor click — more reliable than location.href
     const link = document.createElement("a");
     link.href = mailtoUrl;
     link.rel = "noopener noreferrer";
@@ -109,8 +194,6 @@ const ContactSection = () => {
     link.click();
     document.body.removeChild(link);
 
-    // Even if a mail client opens, also copy email to clipboard so the
-    // message isn't lost if the handoff fails (very common on desktop Chrome).
     try {
       await navigator.clipboard.writeText(
         `To: ${CONTACT_EMAIL}\nSubject: ${decodeURIComponent(
@@ -155,7 +238,8 @@ const ContactSection = () => {
 
     setStatus("success");
     toast.success("Message sent!", {
-      description: "Thanks for reaching out — I'll get back to you within 24 hours.",
+      description:
+        "Thanks for reaching out — I'll get back to you within 24 hours.",
     });
     resetAfterSuccess();
   };
@@ -206,7 +290,6 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
-      {/* Background ambience */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -229,159 +312,76 @@ const ContactSection = () => {
         }}
       />
 
-      {/* Floating dots */}
-      {[
-        { x: "10%", y: "20%", c: "hsl(var(--highlight-purple))", d: 0 },
-        { x: "92%", y: "30%", c: "hsl(var(--highlight-pink))", d: 0.6 },
-        { x: "8%", y: "75%", c: "hsl(var(--highlight-cyan))", d: 1.2 },
-        { x: "94%", y: "82%", c: "hsl(var(--primary))", d: 1.8 },
-      ].map((p, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            left: p.x,
-            top: p.y,
-            width: 5,
-            height: 5,
-            background: p.c,
-            boxShadow: `0 0 10px ${p.c}, 0 0 20px ${p.c}`,
-          }}
-          animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.4, 0.9] }}
-          transition={{ duration: 4, repeat: Infinity, delay: p.d }}
-        />
-      ))}
-
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 backdrop-blur-sm font-mono text-xs">
-            <Terminal size={12} className="text-primary" />
-            <span className="text-primary">~/contact</span>
-            <span className="text-muted-foreground">— chapter 05</span>
-          </div>
-        </motion.div>
-
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight text-center"
-        >
-          Let&apos;s work <span className="text-gradient-primary">together</span>
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-muted-foreground max-w-2xl mx-auto text-center mb-14"
-        >
-          Have a project in mind, an opportunity to discuss, or just want to
-          chat? My inbox is always open.
-        </motion.p>
+        <SectionHeader
+          badge="~/contact"
+          chapter="chapter 05"
+          title={
+            <>
+              Let&apos;s work{" "}
+              <span className="text-gradient-primary">together</span>
+            </>
+          }
+          titleClassName="text-4xl md:text-5xl"
+          subtitle="Have a project in mind, an opportunity to discuss, or just want to chat? My inbox is always open."
+        />
 
         <div className="grid lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-          {/* Left: info cards + socials */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-5% 0px" }}
+            transition={{ duration: 0.5 }}
             className="lg:col-span-2 space-y-4"
           >
-            {infoItems.map(
-              ({ icon: Icon, label, value, accent, accent2, href }, i) => (
-                <a
-                  key={i}
-                  href={href || "#"}
-                  className="group relative block"
-                  onClick={(e) => !href && e.preventDefault()}
-                >
-                  <div
-                    aria-hidden
-                    className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      background: `linear-gradient(135deg, ${accent}, ${accent2})`,
-                    }}
-                  />
-                  <div className="relative flex items-center gap-4 p-4 rounded-xl bg-card border border-border transition-colors duration-300 group-hover:border-transparent overflow-hidden">
-                    {/* Hover ring */}
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                      style={{
-                        padding: "1px",
-                        background: `linear-gradient(135deg, ${accent}, ${accent2})`,
-                        WebkitMask:
-                          "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-                        WebkitMaskComposite: "xor",
-                        maskComposite: "exclude",
-                      }}
-                    />
-                    <div
-                      className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: `linear-gradient(135deg, ${accent}22, ${accent2}11)`,
-                        border: `1px solid ${accent}33`,
-                      }}
-                    >
-                      <Icon size={18} style={{ color: accent }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-0.5">
-                        {label}
-                      </p>
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {value}
-                      </p>
-                    </div>
-                    {href && (
-                      <ArrowUpRight
-                        size={16}
-                        className="text-muted-foreground/40 group-hover:text-foreground group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all flex-shrink-0"
-                      />
-                    )}
-                  </div>
-                </a>
-              ),
-            )}
+            {infoItems.map((item, i) => (
+              <InfoCard key={i} item={item} index={i} />
+            ))}
 
-            {/* Social card */}
-            <div className="relative bg-card border border-border rounded-xl p-5">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-5% 0px" }}
+              transition={{ delay: 0.3, duration: 0.45 }}
+              className="relative bg-card border border-border rounded-xl p-5"
+            >
               <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-3">
                 Find me online
               </p>
               <div className="flex gap-2.5">
                 {socials.map((s, i) => (
-                  <a
-                    key={i}
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={s.label}
-                    className="w-10 h-10 rounded-lg border border-border bg-black/30 flex items-center justify-center text-muted-foreground hover:text-white hover:border-white/20 hover:-translate-y-0.5 transition-all"
-                  >
-                    <s.icon size={16} />
-                  </a>
+                  <Magnetic key={i} strength={8}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={s.label}
+                      className="group/social relative w-10 h-10 rounded-lg border border-border bg-black/30 flex items-center justify-center text-muted-foreground transition-colors duration-300 hover:text-white overflow-hidden"
+                    >
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 opacity-0 group-hover/social:opacity-100 transition-opacity duration-300"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, hsl(var(--highlight-purple) / 0.25), hsl(var(--primary) / 0.25))",
+                        }}
+                      />
+                      <s.icon
+                        size={16}
+                        className="relative z-10 transition-transform duration-300 group-hover/social:scale-125"
+                      />
+                    </a>
+                  </Magnetic>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
-          {/* Right: terminal-style contact form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            viewport={{ once: true, margin: "-5% 0px" }}
+            transition={{ delay: 0.1, duration: 0.5 }}
             className="lg:col-span-3 relative"
           >
             <div
@@ -396,7 +396,6 @@ const ContactSection = () => {
               onSubmit={handleSubmit}
               className="relative bg-card/80 border border-border rounded-2xl backdrop-blur-sm overflow-hidden"
             >
-              {/* Header */}
               <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-gradient-to-b from-white/[0.04] to-transparent">
                 <div className="flex items-center gap-2 font-mono text-xs">
                   <span className="w-2.5 h-2.5 rounded-full bg-highlight-red/70 shadow-[0_0_6px_hsl(var(--highlight-red)/0.6)]" />
@@ -412,13 +411,11 @@ const ContactSection = () => {
                 </span>
               </div>
 
-              {/* Body */}
               <div className="p-5 md:p-6 space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field
                     label="name"
                     name="name"
-                    // placeholder="ada lovelace"
                     value={formData.name}
                     onChange={handleChange}
                   />
@@ -426,7 +423,6 @@ const ContactSection = () => {
                     label="email"
                     name="email"
                     type="email"
-                    // placeholder="ada@example.com"
                     value={formData.email}
                     onChange={handleChange}
                   />
@@ -434,61 +430,66 @@ const ContactSection = () => {
                 <Field
                   label="subject"
                   name="subject"
-                  // placeholder="project inquiry"
                   value={formData.subject}
                   onChange={handleChange}
                 />
                 <Field
                   label="message"
                   name="message"
-                  // placeholder="Tell me about your project..."
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
                 />
 
-                <button
-                  type="submit"
-                  disabled={status === "submitting" || status === "success"}
-                  className="group/btn w-full relative overflow-hidden rounded-lg font-bold text-white py-3.5 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-90"
-                  style={{
-                    background:
-                      status === "success"
-                        ? "linear-gradient(135deg, hsl(var(--highlight-green)), hsl(var(--highlight-cyan)))"
-                        : "linear-gradient(135deg, hsl(var(--highlight-purple)), hsl(var(--primary)))",
-                    boxShadow:
-                      status === "success"
-                        ? "0 4px 20px hsl(var(--highlight-green) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)"
-                        : "0 4px 20px hsl(var(--primary) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)",
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:translate-x-[400%] transition-transform duration-1000 ease-in-out"
-                  />
-                  {status === "submitting" ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      <span>Sending…</span>
-                    </>
-                  ) : status === "success" ? (
-                    <>
-                      <Check size={16} />
-                      <span>Message sent!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send size={16} />
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
+                <Magnetic strength={6} as="div" className="block">
+                  <button
+                    type="submit"
+                    disabled={
+                      status === "submitting" || status === "success"
+                    }
+                    className="group/btn w-full relative overflow-hidden rounded-lg font-bold text-white py-3.5 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-90"
+                    style={{
+                      background:
+                        status === "success"
+                          ? "linear-gradient(135deg, hsl(var(--highlight-green)), hsl(var(--highlight-cyan)))"
+                          : "linear-gradient(135deg, hsl(var(--highlight-purple)), hsl(var(--primary)))",
+                      boxShadow:
+                        status === "success"
+                          ? "0 4px 20px hsl(var(--highlight-green) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)"
+                          : "0 4px 20px hsl(var(--primary) / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.12)",
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:translate-x-[400%] transition-transform duration-1000 ease-in-out"
+                    />
+                    {status === "submitting" ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Sending…</span>
+                      </>
+                    ) : status === "success" ? (
+                      <>
+                        <Check size={16} />
+                        <span>Message sent!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send
+                          size={16}
+                          className="transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-0.5"
+                        />
+                        <span>Send Message</span>
+                      </>
+                    )}
+                  </button>
+                </Magnetic>
 
                 {!WEB3FORMS_KEY && (
                   <p className="text-[10px] font-mono text-muted-foreground/60 text-center pt-1">
-                    <span className="text-muted-foreground/40">{"//"}</span>{" "}
-                    no email service configured — submitting will open your
-                    mail client &amp; copy the message to your clipboard
+                    <span className="text-muted-foreground/40">{"//"}</span> no
+                    email service configured — submitting will open your mail
+                    client &amp; copy the message to your clipboard
                   </p>
                 )}
               </div>
@@ -518,33 +519,63 @@ const Field = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   rows?: number;
-}) => (
-  <label className="block">
-    <span className="block text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
-      {/* <span className="text-highlight-purple">const</span>{" "} */}
-      <span className="text-highlight-blue">{label}</span> ={" "}
-      {/* <span className="text-muted-foreground/60">await ask()</span> */}
-    </span>
-    {rows ? (
-      <textarea
-        name={name}
-        rows={rows}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="w-full px-4 py-2.5 rounded-lg bg-secondary/60 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 focus:bg-secondary transition-all resize-none font-mono"
-      />
-    ) : (
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="w-full px-4 py-2.5 rounded-lg bg-secondary/60 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 focus:bg-secondary transition-all font-mono"
-      />
-    )}
-  </label>
-);
+}) => {
+  const [focused, setFocused] = useState(false);
+
+  return (
+    <label className="block group/field">
+      <span className="block text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+        <span
+          className={`transition-colors duration-200 ${
+            focused ? "text-primary" : "text-highlight-blue"
+          }`}
+        >
+          {label}
+        </span>{" "}
+        ={" "}
+      </span>
+      <div className="relative">
+        <span
+          aria-hidden
+          className={`absolute -inset-px rounded-lg pointer-events-none transition-opacity duration-300 ${
+            focused ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(var(--highlight-purple) / 0.6), hsl(var(--primary) / 0.6))",
+            padding: "1px",
+            WebkitMask:
+              "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+          }}
+        />
+        {rows ? (
+          <textarea
+            name={name}
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            className="relative w-full px-4 py-2.5 rounded-lg bg-secondary/60 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:bg-secondary transition-all resize-none font-mono"
+          />
+        ) : (
+          <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            className="relative w-full px-4 py-2.5 rounded-lg bg-secondary/60 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:bg-secondary transition-all font-mono"
+          />
+        )}
+      </div>
+    </label>
+  );
+};
 
 export default ContactSection;

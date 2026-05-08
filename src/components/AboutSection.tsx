@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { motion, animate, useInView } from "framer-motion";
 import {
   Code2,
   Server,
   MonitorCheck,
-  Terminal,
   Sparkles,
   Layers,
   Zap,
@@ -12,6 +11,9 @@ import {
 } from "lucide-react";
 import LiveDurationInline, { LiveTotalYears } from "@/components/LiveDuration";
 import { useLiveDuration } from "@/hooks/useLiveDuration";
+import { useSpotlight } from "@/hooks/useSpotlight";
+import TiltCard from "@/components/fx/TiltCard";
+import SectionHeader from "@/components/fx/SectionHeader";
 
 type AccentCard = {
   icon: typeof Code2;
@@ -61,8 +63,6 @@ type Stat = {
   /**
    * If true, `value` is computed live from the SE-experience counter
    * (full years elapsed since 26 Sept 2022) and re-evaluates every render.
-   * Used so the "Years Experience" stat auto-rolls 3 → 4 → 5 … without
-   * manual edits.
    */
   live?: boolean;
 };
@@ -107,12 +107,6 @@ const Counter = ({ to, suffix }: { to: number; suffix: string }) => {
   );
 };
 
-/**
- * Wraps `Counter` so the target value reflects the live SE-experience years
- * (full years elapsed since 26 Sept 2022). The Counter only re-animates if
- * `to` actually changes, so this stays visually identical to the static
- * Counter except it auto-bumps once per year.
- */
 const LiveYearsCounter = ({
   priorYears = 0,
   suffix,
@@ -124,10 +118,124 @@ const LiveYearsCounter = ({
   return <Counter to={priorYears + d.years} suffix={suffix} />;
 };
 
+const FeatureCard = memo(function FeatureCard({ card }: { card: AccentCard }) {
+  const spotRef = useSpotlight<HTMLDivElement>();
+
+  return (
+    <TiltCard max={6} ease={0.2} lift={4} className="group relative h-full">
+      {/* Outer glow on hover */}
+      <div
+        aria-hidden
+        className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-50 blur-xl transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: `linear-gradient(135deg, ${card.accent}, ${card.accent2})`,
+        }}
+      />
+
+      <div
+        ref={spotRef}
+        className="relative bg-card border border-border rounded-xl p-6 h-full overflow-hidden transition-colors duration-300 group-hover:border-transparent"
+        style={
+          {
+            "--mx": "50%",
+            "--my": "-50%",
+          } as React.CSSProperties
+        }
+      >
+        {/* Spotlight pool that follows the cursor */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+          style={{
+            background: `radial-gradient(280px circle at var(--mx) var(--my), ${card.accent}33, transparent 65%)`,
+          }}
+        />
+
+        {/* Hover gradient ring */}
+        <div
+          aria-hidden
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            padding: "1px",
+            background: `linear-gradient(135deg, ${card.accent}, ${card.accent2})`,
+            WebkitMask:
+              "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+          }}
+        />
+
+        {/* Soft accent corner glow */}
+        <div
+          aria-hidden
+          className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-30 group-hover:opacity-60 blur-3xl transition-opacity duration-500 pointer-events-none"
+          style={{ background: card.accent }}
+        />
+
+        <div className="relative flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider">
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{
+                background: card.accent,
+                boxShadow: `0 0 8px ${card.accent}`,
+              }}
+            />
+            <span className="text-muted-foreground">{card.label}</span>
+          </div>
+          <ArrowUpRight
+            size={14}
+            className="text-muted-foreground/40 group-hover:text-foreground group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
+          />
+        </div>
+
+        <div
+          className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6"
+          style={{
+            background: `linear-gradient(135deg, ${card.accent}22, ${card.accent2}11)`,
+            border: `1px solid ${card.accent}33`,
+          }}
+        >
+          <card.icon size={22} style={{ color: card.accent }} />
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-xl blur-md opacity-40 -z-10"
+            style={{ background: card.accent }}
+          />
+        </div>
+
+        <h3 className="relative font-display font-bold text-foreground text-lg mb-2">
+          {card.title}
+        </h3>
+
+        <p className="relative text-sm text-muted-foreground leading-relaxed mb-5">
+          {card.desc}
+        </p>
+
+        <div className="relative flex flex-wrap gap-1.5">
+          {card.skills.map((s) => (
+            <span
+              key={s}
+              className="text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all duration-300 hover:scale-110"
+              style={{
+                borderColor: `${card.accent}40`,
+                color: card.accent,
+                background: `${card.accent}0d`,
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </TiltCard>
+  );
+});
+
 const AboutSection = () => {
   return (
     <section id="about" className="py-24 relative overflow-hidden">
-      {/* Background ambience: blurred color blooms */}
+      {/* Background ambience */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -137,7 +245,6 @@ const AboutSection = () => {
         }}
       />
 
-      {/* Subtle grid */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -152,74 +259,39 @@ const AboutSection = () => {
         }}
       />
 
-      {/* A few floating glowing dots for continuity with hero */}
-      {[
-        { x: "10%", y: "20%", c: "hsl(var(--highlight-purple))", d: 0 },
-        { x: "92%", y: "30%", c: "hsl(var(--primary))", d: 0.6 },
-        { x: "8%", y: "70%", c: "hsl(var(--highlight-cyan))", d: 1.2 },
-        { x: "94%", y: "82%", c: "hsl(var(--highlight-pink))", d: 1.8 },
-        { x: "50%", y: "8%", c: "hsl(var(--highlight-green))", d: 2.2 },
-      ].map((p, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            left: p.x,
-            top: p.y,
-            width: 5,
-            height: 5,
-            background: p.c,
-            boxShadow: `0 0 10px ${p.c}, 0 0 20px ${p.c}`,
-          }}
-          animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.4, 0.9] }}
-          transition={{ duration: 4, repeat: Infinity, delay: p.d }}
-        />
-      ))}
-
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 backdrop-blur-sm font-mono text-xs">
-            <Terminal size={12} className="text-primary" />
-            <span className="text-primary">~/about</span>
-            <span className="text-muted-foreground">— chapter 01</span>
-          </div>
-        </motion.div>
-
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-10 tracking-tight text-center"
-        >
-          Passionate about building{" "}
-          <span className="text-gradient-primary">great software</span>
-        </motion.h2>
+        <SectionHeader
+          badge="~/about"
+          chapter="chapter 01"
+          title={
+            <>
+              Passionate about building{" "}
+              <span className="text-gradient-primary">great software</span>
+            </>
+          }
+        />
 
         {/* Narrative as a JSDoc-style comment block */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15 }}
-          className="max-w-3xl mx-auto mb-20 relative"
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ delay: 0.15, duration: 0.55 }}
+          className="max-w-3xl mx-auto mb-20 relative group"
         >
           <div
             aria-hidden
-            className="absolute -inset-4 rounded-2xl blur-2xl opacity-40 pointer-events-none"
+            className="absolute -inset-4 rounded-2xl blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none"
             style={{
               background:
                 "linear-gradient(135deg, hsl(var(--highlight-purple) / 0.25), hsl(var(--primary) / 0.25))",
             }}
           />
-          <div className="relative bg-card/60 border border-border rounded-2xl p-6 md:p-7 backdrop-blur-sm">
+          <TiltCard
+            max={3}
+            lift={3}
+            className="relative bg-card/60 border border-border rounded-2xl p-6 md:p-7 backdrop-blur-sm"
+          >
             <div className="font-mono text-xs text-muted-foreground/80 mb-3 select-none">
               <span className="text-highlight-purple">/**</span>
             </div>
@@ -260,124 +332,28 @@ const AboutSection = () => {
             <div className="font-mono text-xs text-muted-foreground/80 mt-3 select-none">
               <span className="text-highlight-purple">*/</span>
             </div>
-          </div>
+          </TiltCard>
         </motion.div>
 
-        {/* Cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-10% 0px" }}
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-20"
         >
           {cards.map((card, i) => (
-            <motion.div
-              key={i}
-              variants={itemVariants}
-              whileHover={{ y: -4 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="group relative"
-            >
-              {/* Outer glow on hover */}
-              <div
-                aria-hidden
-                className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-50 blur-xl transition-opacity duration-500 pointer-events-none"
-                style={{
-                  background: `linear-gradient(135deg, ${card.accent}, ${card.accent2})`,
-                }}
-              />
-
-              <div className="relative bg-card border border-border rounded-xl p-6 h-full overflow-hidden transition-colors duration-300 group-hover:border-transparent">
-                {/* Gradient border ring on hover */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    padding: "1px",
-                    background: `linear-gradient(135deg, ${card.accent}, ${card.accent2})`,
-                    WebkitMask:
-                      "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-                    WebkitMaskComposite: "xor",
-                    maskComposite: "exclude",
-                  }}
-                />
-
-                {/* Soft accent corner glow */}
-                <div
-                  aria-hidden
-                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-30 group-hover:opacity-60 blur-3xl transition-opacity duration-500 pointer-events-none"
-                  style={{ background: card.accent }}
-                />
-
-                {/* File label header */}
-                <div className="relative flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider">
-                    <span
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{
-                        background: card.accent,
-                        boxShadow: `0 0 8px ${card.accent}`,
-                      }}
-                    />
-                    <span className="text-muted-foreground">{card.label}</span>
-                  </div>
-                  <ArrowUpRight
-                    size={14}
-                    className="text-muted-foreground/40 group-hover:text-foreground group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
-                  />
-                </div>
-
-                {/* Icon block */}
-                <div
-                  className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                  style={{
-                    background: `linear-gradient(135deg, ${card.accent}22, ${card.accent2}11)`,
-                    border: `1px solid ${card.accent}33`,
-                  }}
-                >
-                  <card.icon size={22} style={{ color: card.accent }} />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-xl blur-md opacity-40 -z-10"
-                    style={{ background: card.accent }}
-                  />
-                </div>
-
-                <h3 className="relative font-display font-bold text-foreground text-lg mb-2">
-                  {card.title}
-                </h3>
-
-                <p className="relative text-sm text-muted-foreground leading-relaxed mb-5">
-                  {card.desc}
-                </p>
-
-                {/* Skill chips */}
-                <div className="relative flex flex-wrap gap-1.5">
-                  {card.skills.map((s) => (
-                    <span
-                      key={s}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded-full border transition-colors"
-                      style={{
-                        borderColor: `${card.accent}40`,
-                        color: card.accent,
-                        background: `${card.accent}0d`,
-                      }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <motion.div key={i} variants={itemVariants}>
+              <FeatureCard card={card} />
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Stats panel — styled like a code-window */}
+        {/* Stats panel */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-10% 0px" }}
           transition={{ duration: 0.6 }}
           className="relative max-w-5xl mx-auto"
         >
@@ -390,7 +366,6 @@ const AboutSection = () => {
             }}
           />
           <div className="relative bg-card/80 border border-border rounded-2xl backdrop-blur-sm overflow-hidden">
-            {/* Header bar */}
             <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-gradient-to-b from-white/[0.04] to-transparent">
               <div className="flex items-center gap-2 font-mono text-xs">
                 <span className="w-2.5 h-2.5 rounded-full bg-highlight-red/70 shadow-[0_0_6px_hsl(var(--highlight-red)/0.6)]" />
@@ -405,23 +380,23 @@ const AboutSection = () => {
               </div>
             </div>
 
-            {/* Grid of stats */}
             <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-10% 0px" }}
               className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-border/60"
             >
               {stats.map((stat, i) => (
                 <motion.div
                   key={i}
                   variants={itemVariants}
-                  className="text-center px-6 py-8 group relative"
+                  whileHover={{ y: -4 }}
+                  className="text-center px-6 py-8 group relative cursor-default"
                 >
                   <stat.icon
                     size={18}
-                    className="mx-auto mb-3 text-muted-foreground/60 group-hover:text-primary transition-colors"
+                    className="mx-auto mb-3 text-muted-foreground/60 group-hover:text-primary transition-all duration-300 group-hover:scale-125"
                   />
                   <div className="text-3xl md:text-4xl font-display font-bold text-gradient-primary mb-1.5 leading-none">
                     {stat.live ? (

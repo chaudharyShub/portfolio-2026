@@ -1,13 +1,16 @@
-import { motion } from "framer-motion";
+import { memo, useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 import {
   Briefcase,
   Wrench,
   Code2,
   Calendar,
   Building2,
-  Terminal,
   type LucideIcon,
 } from "lucide-react";
+import TiltCard from "@/components/fx/TiltCard";
+import SectionHeader from "@/components/fx/SectionHeader";
+import { useSpotlight } from "@/hooks/useSpotlight";
 
 type Experience = {
   role: string;
@@ -102,10 +105,165 @@ const experiences: Experience[] = [
   },
 ];
 
+const ExperienceCard = memo(function ExperienceCard({
+  exp,
+  index,
+}: {
+  exp: Experience;
+  index: number;
+}) {
+  const spotRef = useSpotlight<HTMLDivElement>();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -24 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-5% 0px" }}
+      transition={{ delay: index * 0.1, duration: 0.55 }}
+      className="relative pl-14 pb-10 last:pb-0"
+    >
+      {/* Timeline node */}
+      <div className="absolute left-0 top-1">
+        <div className="relative">
+          <motion.div
+            aria-hidden
+            className="absolute inset-0 rounded-full blur-md"
+            style={{ background: exp.accent }}
+            animate={{ opacity: [0.35, 0.65, 0.35] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div
+            className="relative w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110"
+            style={{
+              background: `linear-gradient(135deg, ${exp.accent}33, ${exp.accent2}11)`,
+              border: `1px solid ${exp.accent}66`,
+              boxShadow: `0 0 12px ${exp.accent}55`,
+            }}
+          >
+            <exp.icon size={15} style={{ color: exp.accent }} />
+          </div>
+          {exp.current && (
+            <span
+              aria-hidden
+              className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-highlight-green border-2 border-background animate-pulse"
+            />
+          )}
+        </div>
+      </div>
+
+      <TiltCard max={4} ease={0.18} lift={3} className="group relative">
+        <div
+          aria-hidden
+          className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: `linear-gradient(135deg, ${exp.accent}, ${exp.accent2})`,
+          }}
+        />
+
+        <div
+          ref={spotRef}
+          className="relative bg-card border border-border rounded-xl overflow-hidden transition-colors duration-300 group-hover:border-transparent"
+          style={
+            {
+              "--mx": "50%",
+              "--my": "-50%",
+            } as React.CSSProperties
+          }
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(280px circle at var(--mx) var(--my), ${exp.accent}26, transparent 65%)`,
+            }}
+          />
+
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            style={{
+              padding: "1px",
+              background: `linear-gradient(135deg, ${exp.accent}, ${exp.accent2})`,
+              WebkitMask:
+                "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+            }}
+          />
+
+          <div className="relative flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-gradient-to-b from-white/[0.04] to-transparent">
+            <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+              <span className="text-highlight-green">$</span>
+              <span className="text-foreground">git log --role</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              <Calendar size={10} />
+              <span>{exp.period}</span>
+              {exp.current && (
+                <span
+                  className="ml-1 px-1.5 py-0.5 rounded text-highlight-green border border-highlight-green/30 bg-highlight-green/10"
+                  style={{ fontSize: "9px" }}
+                >
+                  current
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="relative p-5">
+            <h3 className="font-display font-bold text-foreground text-lg leading-tight mb-1.5 transition-transform duration-300 group-hover:translate-x-0.5">
+              {exp.role}
+            </h3>
+            <div className="flex items-center gap-1.5 mb-3">
+              <Building2 size={13} style={{ color: exp.accent }} />
+              <span
+                className="text-sm font-medium"
+                style={{ color: exp.accent }}
+              >
+                {exp.company}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+              {exp.desc}
+            </p>
+
+            <div className="flex flex-wrap gap-1.5">
+              {exp.tags.map((tag, ti) => (
+                <span
+                  key={ti}
+                  className="text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all duration-300 hover:scale-110"
+                  style={{
+                    borderColor: `${exp.accent}33`,
+                    color: exp.accent,
+                    background: `${exp.accent}0a`,
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </TiltCard>
+    </motion.div>
+  );
+});
+
 const ExperienceSection = () => {
+  const railRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: railRef,
+    offset: ["start 80%", "end 30%"],
+  });
+  // Smooth the rail growth so it never appears jittery.
+  const railScaleY = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 28,
+    mass: 0.4,
+  });
+
   return (
     <section id="experience" className="py-24 relative overflow-hidden">
-      {/* Background ambience */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -128,205 +286,45 @@ const ExperienceSection = () => {
         }}
       />
 
-      {/* Floating dots */}
-      {[
-        { x: "5%", y: "15%", c: "hsl(var(--primary))", d: 0 },
-        { x: "94%", y: "25%", c: "hsl(var(--highlight-purple))", d: 0.7 },
-        { x: "6%", y: "85%", c: "hsl(var(--highlight-orange))", d: 1.4 },
-        { x: "92%", y: "78%", c: "hsl(var(--highlight-cyan))", d: 2 },
-      ].map((p, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            left: p.x,
-            top: p.y,
-            width: 5,
-            height: 5,
-            background: p.c,
-            boxShadow: `0 0 10px ${p.c}, 0 0 20px ${p.c}`,
-          }}
-          animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.4, 0.9] }}
-          transition={{ duration: 4, repeat: Infinity, delay: p.d }}
-        />
-      ))}
-
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 backdrop-blur-sm font-mono text-xs">
-            <Terminal size={12} className="text-primary" />
-            <span className="text-primary">~/experience</span>
-            <span className="text-muted-foreground">— chapter 04</span>
-          </div>
-        </motion.div>
+        <SectionHeader
+          badge="~/experience"
+          chapter="chapter 04"
+          title={
+            <>
+              Work <span className="text-gradient-primary">experience</span>
+            </>
+          }
+          titleClassName="text-4xl md:text-5xl"
+          subtitle="A timeline of the roles, products, and teams I've helped ship along the way."
+        />
 
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight text-center"
-        >
-          Work <span className="text-gradient-primary">experience</span>
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-muted-foreground max-w-2xl mx-auto text-center mb-14"
-        >
-          A timeline of the roles, products, and teams I&apos;ve helped ship
-          along the way.
-        </motion.p>
-
-        {/* Timeline */}
-        <div className="max-w-3xl mx-auto relative">
-          {/* Gradient timeline rail */}
+        <div ref={railRef} className="max-w-3xl mx-auto relative">
+          {/* Static dim rail */}
           <div
             aria-hidden
             className="absolute left-[19px] top-2 bottom-2 w-px pointer-events-none"
             style={{
               background:
-                "linear-gradient(180deg, hsl(var(--highlight-purple) / 0.7), hsl(var(--primary) / 0.5), hsl(var(--highlight-orange) / 0.5), transparent)",
+                "linear-gradient(180deg, hsl(var(--border) / 0.8), hsl(var(--border) / 0.4))",
+            }}
+          />
+          {/* Animated colored rail that grows with scroll progress */}
+          <motion.div
+            aria-hidden
+            className="absolute left-[19px] top-2 bottom-2 w-px pointer-events-none origin-top"
+            style={{
+              scaleY: railScaleY,
+              background:
+                "linear-gradient(180deg, hsl(var(--highlight-purple)), hsl(var(--primary)), hsl(var(--highlight-orange)))",
+              boxShadow:
+                "0 0 12px hsl(var(--primary) / 0.65), 0 0 4px hsl(var(--highlight-purple) / 0.65)",
+              willChange: "transform",
             }}
           />
 
           {experiences.map((exp, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15, duration: 0.5 }}
-              className="relative pl-14 pb-10 last:pb-0"
-            >
-              {/* Timeline node */}
-              <div className="absolute left-0 top-1">
-                <div className="relative">
-                  {/* Outer halo */}
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-full blur-md"
-                    style={{
-                      background: exp.accent,
-                      opacity: 0.5,
-                    }}
-                  />
-                  <div
-                    className="relative w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{
-                      background: `linear-gradient(135deg, ${exp.accent}33, ${exp.accent2}11)`,
-                      border: `1px solid ${exp.accent}66`,
-                      boxShadow: `0 0 12px ${exp.accent}55`,
-                    }}
-                  >
-                    <exp.icon size={15} style={{ color: exp.accent }} />
-                  </div>
-                  {exp.current && (
-                    <span
-                      aria-hidden
-                      className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-highlight-green border-2 border-background animate-pulse"
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Card */}
-              <div className="group relative">
-                {/* Glow on hover */}
-                <div
-                  aria-hidden
-                  className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background: `linear-gradient(135deg, ${exp.accent}, ${exp.accent2})`,
-                  }}
-                />
-
-                <div className="relative bg-card border border-border rounded-xl overflow-hidden transition-colors duration-300 group-hover:border-transparent">
-                  {/* Hover gradient ring */}
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{
-                      padding: "1px",
-                      background: `linear-gradient(135deg, ${exp.accent}, ${exp.accent2})`,
-                      WebkitMask:
-                        "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-                      WebkitMaskComposite: "xor",
-                      maskComposite: "exclude",
-                    }}
-                  />
-
-                  {/* Log header */}
-                  <div className="relative flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-gradient-to-b from-white/[0.04] to-transparent">
-                    <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
-                      <span className="text-highlight-green">$</span>
-                      <span className="text-foreground">git log --role</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                      <Calendar size={10} />
-                      <span>{exp.period}</span>
-                      {exp.current && (
-                        <span
-                          className="ml-1 px-1.5 py-0.5 rounded text-highlight-green border border-highlight-green/30 bg-highlight-green/10"
-                          style={{ fontSize: "9px" }}
-                        >
-                          current
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Body */}
-                  <div className="relative p-5">
-                    <h3 className="font-display font-bold text-foreground text-lg leading-tight mb-1.5">
-                      {exp.role}
-                    </h3>
-                    <div className="flex items-center gap-1.5 mb-3">
-                      <Building2
-                        size={13}
-                        style={{ color: exp.accent }}
-                      />
-                      <span
-                        className="text-sm font-medium"
-                        style={{ color: exp.accent }}
-                      >
-                        {exp.company}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      {exp.desc}
-                    </p>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {exp.tags.map((tag, ti) => (
-                        <span
-                          key={ti}
-                          className="text-[10px] font-mono px-2 py-0.5 rounded-full border"
-                          style={{
-                            borderColor: `${exp.accent}33`,
-                            color: exp.accent,
-                            background: `${exp.accent}0a`,
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <ExperienceCard key={i} exp={exp} index={i} />
           ))}
         </div>
       </div>
